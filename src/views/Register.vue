@@ -111,13 +111,12 @@ const handleRegister = () => {
         password: password.value,
       })
       .then(() => {
+        formError.value = "";
         router.push("/");
         toast.success("ثبت نام با موفقیت انجام شد");
       })
       .catch((err) => {
-        console.log("catch: ", err.data.error);
         objectMap(err.data.error, (value: string, key: string) => {
-          console.log(key, value);
           toast.error(`${key} Error: ${value}`);
         });
       });

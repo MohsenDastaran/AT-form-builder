@@ -2,27 +2,32 @@ import { defineStore } from "pinia";
 import { api } from "@/composables/useApi";
 import { enuStorageKey, storage } from "@/composables/useStorage";
 
-type User = {
-  id: number;
-  email: string;
-};
-
 type AuthState = {
-  user: User | null;
   isLoggedIn: boolean;
   isLoading: boolean;
   error: string | null;
 };
 
+interface IntTokens {
+  access: string;
+  refresh: string;
+}
 export const useAuthStore = defineStore("auth", {
   state: (): AuthState => ({
-    user: null,
     isLoggedIn: false,
     isLoading: false,
     error: null,
   }),
 
   actions: {
+    setUserInfo(info: { access: string; refresh: string }) {
+      storage.set({ key: enuStorageKey.accessToken, value: info.access });
+      storage.set({
+        key: enuStorageKey.refreshToken,
+        value: info.refresh,
+      });
+      this.isLoggedIn = true;
+    },
     async registerUser(payload: {
       email: string;
       password: string;
@@ -31,17 +36,15 @@ export const useAuthStore = defineStore("auth", {
       this.error = null;
 
       try {
-        const response = await api.post("signup", payload, undefined, false);
-        const { user, access_token, refresh_token } = response as {
-          user: User;
-          access_token: string;
-          refresh_token: string;
-        };
+        const response: any = await api.post(
+          "signup",
+          payload,
+          undefined,
+          false
+        );
 
-        storage.set({ key: enuStorageKey.accessToken, value: access_token });
-        storage.set({ key: enuStorageKey.refreshToken, value: refresh_token });
-        this.user = user;
-        this.isLoggedIn = true;
+        const { access, refresh } = response.data as IntTokens;
+        this.setUserInfo({ access, refresh });
 
         return response;
       } catch (err: any) {
@@ -56,17 +59,15 @@ export const useAuthStore = defineStore("auth", {
       this.error = null;
 
       try {
-        const response = await api.post("login", payload, undefined, false);
-        const { user, access_token, refresh_token } = response as {
-          user: User;
-          access_token: string;
-          refresh_token: string;
-        };
+        const response: any = await api.post(
+          "login",
+          payload,
+          undefined,
+          false
+        );
+        const { access, refresh } = response.data as IntTokens;
 
-        storage.set({ key: enuStorageKey.accessToken, value: access_token });
-        storage.set({ key: enuStorageKey.refreshToken, value: refresh_token });
-        this.user = user;
-        this.isLoggedIn = true;
+        this.setUserInfo({ access, refresh });
         return response;
       } catch (err: any) {
         this.error = err.message || "Login failed.";
@@ -79,7 +80,6 @@ export const useAuthStore = defineStore("auth", {
     logoutUser() {
       storage.remove(enuStorageKey.accessToken);
       storage.remove(enuStorageKey.refreshToken);
-      this.user = null;
       this.isLoggedIn = false;
     },
   },
