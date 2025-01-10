@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import Forms from "../views/Forms.vue";
-// import CreateForm from '../views/CreateForm.vue'
+import CreateForm from "../views/CreateForm.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -23,12 +23,12 @@ const router = createRouter({
       name: "register",
       component: Register,
     },
-    // {
-    //   path: '/create-form',
-    //   name: 'create-form',
-    //   component: CreateForm,
-    //   meta: { requiresAuth: true }
-    // }
+    {
+      path: "/create-form",
+      name: "create-form",
+      component: CreateForm,
+      meta: { requiresAuth: true },
+    },
   ],
 });
 
