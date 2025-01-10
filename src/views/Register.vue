@@ -12,22 +12,24 @@
           rtl
           required
         />
-        
+
         <div class="space-y-2">
           <PasswordInput
             v-model="password"
             label="رمز عبور"
             placeholder="رمز عبور خود را وارد کنید"
-            :error="passwordErrors.length ? passwordErrors[0] : ''"
             rtl
             required
           />
-          
-          <ul v-if="password && passwordErrors.length" class="text-sm text-red-500 list-disc list-inside text-right">
+
+          <ul
+            v-if="password && passwordErrors.length"
+            class="text-sm text-red-500 list-disc list-inside text-right"
+          >
             <li v-for="error in passwordErrors" :key="error">{{ error }}</li>
           </ul>
         </div>
-        
+
         <PasswordInput
           v-model="confirmPassword"
           label="تکرار رمز عبور"
@@ -41,7 +43,7 @@
           {{ formError }}
         </div>
 
-        <button 
+        <button
           type="submit"
           class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
           :disabled="!isFormValid"
@@ -60,53 +62,65 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import BaseInput from '../components/BaseInput.vue'
-import PasswordInput from '../components/PasswordInput.vue'
-import { usePasswordValidation } from '../composables/usePasswordValidation'
-import { useEmailValidation } from '../composables/useEmailValidation'
+<script setup lang="tsx">
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import BaseInput from "../components/BaseInput.vue";
+import PasswordInput from "../components/PasswordInput.vue";
+import { usePasswordValidation } from "../composables/usePasswordValidation";
+import { useEmailValidation } from "../composables/useEmailValidation";
+import { useAuthStore } from "@/store/authStore";
+import { toast } from "@/composables/toast";
+import { objectMap } from "@/composables/objectMap";
 
-const router = useRouter()
-const formError = ref('')
-const confirmPassword = ref('')
+const router = useRouter();
+const formError = ref("");
+const confirmPassword = ref("");
 
-const { 
-  email,
-  emailError,
-} = useEmailValidation()
+const { email, emailError } = useEmailValidation();
 
-const {
-  password,
-  passwordErrors,
-} = usePasswordValidation()
+const { password, passwordErrors } = usePasswordValidation();
 
 const confirmPasswordError = computed(() => {
-  if (!confirmPassword.value) return ''
+  if (!confirmPassword.value) return "";
   if (password.value !== confirmPassword.value) {
-    return 'رمز عبور و تکرار آن مطابقت ندارند'
+    return "رمز عبور و تکرار آن مطابقت ندارند";
   }
-  return ''
-})
+  return "";
+});
 
 const isFormValid = computed(() => {
-  return email.value &&
-         !emailError.value &&
-         password.value &&
-         confirmPassword.value &&
-         passwordErrors.value.length === 0 &&
-         !confirmPasswordError.value
-})
+  return (
+    email.value &&
+    !emailError.value &&
+    password.value &&
+    confirmPassword.value &&
+    passwordErrors.value.length === 0 &&
+    !confirmPasswordError.value
+  );
+});
 
 const handleRegister = () => {
   if (!isFormValid.value) {
-    formError.value = 'لطفا تمام فیلدها را به درستی پر کنید'
-    return
+    formError.value = "لطفا تمام فیلدها را به درستی پر کنید";
+    return;
+  } else {
+    useAuthStore()
+      .registerUser({
+        email: email.value,
+        password: password.value,
+      })
+      .then(() => {
+        router.push("/");
+        toast.success("ثبت نام با موفقیت انجام شد");
+      })
+      .catch((err) => {
+        console.log("catch: ", err.data.error);
+        objectMap(err.data.error, (value: string, key: string) => {
+          console.log(key, value);
+          toast.error(`${key} Error: ${value}`);
+        });
+      });
   }
-  
-  formError.value = ''
-  localStorage.setItem('isAuthenticated', 'true')
-  router.push('/')
-}
+};
 </script>

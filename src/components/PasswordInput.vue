@@ -12,11 +12,12 @@
         @update:model-value="$emit('update:modelValue', $event)"
         :type="showPassword ? 'text' : 'password'"
         :placeholder="placeholder"
-        :error="error"
+        :error="modelValue ? error : undefined"
         :rtl="rtl"
         v-bind="$attrs"
       />
       <button
+        type="button"
         @click="togglePassword"
         class="absolute left-0 pl-3 flex items-center"
         style="top: 11px"

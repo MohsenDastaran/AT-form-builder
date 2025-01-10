@@ -2,7 +2,7 @@
   <div class="min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
       <h2 class="text-2xl font-bold mb-6">خوش آمدید</h2>
-      <h4 class="mb-6">برای ورود رمزو ایمیل خود را وارد کنید</h4>
+      <h4 class="mb-6 text-gray-400">برای ورود رمزو ایمیل خود را وارد کنید</h4>
       <form @submit.prevent="handleLogin" class="space-y-4">
         <BaseInput
           v-model="email"
