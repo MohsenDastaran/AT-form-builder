@@ -1,6 +1,11 @@
 <template>
   <div>
-    <label v-if="label" class="block text-sm font-medium mb-1" :class="{ 'text-right': rtl }">{{ label }}</label>
+    <label
+      v-if="label"
+      class="block text-sm font-medium mb-1"
+      :class="{ 'text-right': rtl }"
+      >{{ label }}</label
+    >
     <div class="relative">
       <BaseInput
         :model-value="modelValue"
@@ -9,13 +14,12 @@
         :placeholder="placeholder"
         :error="error"
         :rtl="rtl"
-        class="pr-10"
         v-bind="$attrs"
       />
       <button
-        type="button"
         @click="togglePassword"
-        class="absolute inset-y-0 right-0 pr-3 flex items-center"
+        class="absolute left-0 pl-3 flex items-center"
+        style="top: 11px"
       >
         <EyeIcon v-if="!showPassword" class="h-5 w-5 text-gray-400" />
         <EyeOffIcon v-else class="h-5 w-5 text-gray-400" />
@@ -25,25 +29,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { EyeIcon, EyeOffIcon } from 'lucide-vue-next'
-import BaseInput from './BaseInput.vue'
+import { ref } from "vue";
+import { EyeIcon, EyeOffIcon } from "lucide-vue-next";
+import BaseInput from "./BaseInput.vue";
 
 const props = defineProps<{
-  modelValue: string
-  label?: string
-  placeholder?: string
-  error?: string
-  rtl?: boolean
-}>()
+  modelValue: string;
+  label?: string;
+  placeholder?: string;
+  error?: string;
+  rtl?: boolean;
+}>();
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
-}>()
+  "update:modelValue": [value: string];
+}>();
 
-const showPassword = ref(false)
+const showPassword = ref(false);
 
 const togglePassword = () => {
-  showPassword.value = !showPassword.value
-}
+  showPassword.value = !showPassword.value;
+};
 </script>
