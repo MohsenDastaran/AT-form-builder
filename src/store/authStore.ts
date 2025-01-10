@@ -28,6 +28,7 @@ export const useAuthStore = defineStore("auth", {
       });
       this.isLoggedIn = true;
     },
+    async refreshToken() {},
     async registerUser(payload: {
       email: string;
       password: string;
@@ -36,12 +37,7 @@ export const useAuthStore = defineStore("auth", {
       this.error = null;
 
       try {
-        const response: any = await api.post(
-          "signup",
-          payload,
-          undefined,
-          false
-        );
+        const response: any = await api.post("signup", payload, false);
 
         const { access, refresh } = response.data as IntTokens;
         this.setUserInfo({ access, refresh });
@@ -59,12 +55,7 @@ export const useAuthStore = defineStore("auth", {
       this.error = null;
 
       try {
-        const response: any = await api.post(
-          "login",
-          payload,
-          undefined,
-          false
-        );
+        const response: any = await api.post("login", payload, false);
         const { access, refresh } = response.data as IntTokens;
 
         this.setUserInfo({ access, refresh });

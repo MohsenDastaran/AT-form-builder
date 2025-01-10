@@ -14,7 +14,6 @@ type ApiRequestData = {
   method: APIMETHODSTYPES;
   body?: Record<string, unknown>;
   queryParams?: Record<string, any>;
-  element?: HTMLElement;
   requiresAuth?: boolean;
 };
 
@@ -57,7 +56,7 @@ const useApi = (data: ApiRequestData) =>
       if (data.requiresAuth) {
         const token = storage.get(enuStorageKey.accessToken);
         if (token) {
-          headers["Authorization"] = `Token ${token}`;
+          headers["Authorization"] = `Bearer ${token}`;
         }
       }
 
@@ -97,48 +96,37 @@ export const api = {
   get: (
     url: string,
     queryParams?: Record<string, unknown>,
-    element?: HTMLElement,
     requiresAuth = true
   ) =>
     useApi({
       url,
       method: APIMETHODSTYPES.GET,
       queryParams,
-      element,
       requiresAuth,
     }),
   delete: (
     url: string,
     queryParams?: Record<string, unknown>,
-    element?: HTMLElement,
     requiresAuth = true
   ) =>
     useApi({
       url,
       method: APIMETHODSTYPES.DELETE,
       queryParams,
-      element,
       requiresAuth,
     }),
-  post: (
-    url: string,
-    body: Record<string, unknown>,
-    element?: HTMLElement,
-    requiresAuth = true
-  ) =>
-    useApi({ url, method: APIMETHODSTYPES.POST, body, element, requiresAuth }),
+  post: (url: string, body: Record<string, unknown>, requiresAuth = true) =>
+    useApi({ url, method: APIMETHODSTYPES.POST, body, requiresAuth }),
   put: (
     url: string,
     body: Record<string, unknown>,
-    element?: HTMLElement,
+
     requiresAuth = true
-  ) =>
-    useApi({ url, method: APIMETHODSTYPES.PUT, body, element, requiresAuth }),
+  ) => useApi({ url, method: APIMETHODSTYPES.PUT, body, requiresAuth }),
   patch: (
     url: string,
     body: Record<string, unknown>,
-    element?: HTMLElement,
+
     requiresAuth = true
-  ) =>
-    useApi({ url, method: APIMETHODSTYPES.PATCH, body, element, requiresAuth }),
+  ) => useApi({ url, method: APIMETHODSTYPES.PATCH, body, requiresAuth }),
 };
