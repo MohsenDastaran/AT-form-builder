@@ -1,5 +1,7 @@
 import { ofetch } from "ofetch";
 import { enuStorageKey, storage } from "./useStorage";
+import { toast } from "./toast";
+import router from "@/router";
 
 enum APIMETHODSTYPES {
   GET = "get",
@@ -28,12 +30,14 @@ const refreshToken = async (): Promise<void> => {
     const refreshToken = storage.get(enuStorageKey.refreshToken);
     const response = await ofetch(`${baseURL}refresh`, {
       method: APIMETHODSTYPES.POST,
-      body: { refresh_token: refreshToken },
+      query: { token: refreshToken },
     });
-    const { access_token } = response as { access_token: string };
-    storage.set({ key: enuStorageKey.accessToken, value: access_token });
+    const { access } = response.data;
+    storage.set({ key: enuStorageKey.accessToken, value: access });
   } catch (error) {
     console.error("Refresh token failed:", error);
+    toast.error("دسترسی ندارید، دوباره وارد شوید");
+    router.push("/login");
     throw error;
   } finally {
     isRefreshing = false;
@@ -69,7 +73,7 @@ const useApi = (data: ApiRequestData) =>
           resolve(res);
         })
         .catch(async (err: any) => {
-          if (err.response?.status === 401 && data.requiresAuth) {
+          if (err.data?.status === 403 && data.requiresAuth) {
             pendingRequests.push(() => makeRequest());
 
             if (!isRefreshing) {
