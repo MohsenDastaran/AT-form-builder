@@ -36,5 +36,5 @@ pnpm build
 Locally preview production build:
 
 ```bash
-npm run preview
+pnpm run preview
 ```

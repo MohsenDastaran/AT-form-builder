@@ -218,7 +218,7 @@ const onSubmit = () => {
     description: formDescription.value,
     sections: questions.value,
   };
-  if (!!Object.keys(props.form).length) {
+  if (!!Object.keys(props?.form || {}).length) {
     useFormStore()
       .editForm(props.form.id, payload)
       .then(() => router.push("/"));
@@ -228,8 +228,8 @@ const onSubmit = () => {
       .then(() => router.push("/"));
 };
 
-const props = defineProps({ form: Object as any });
-if (!!Object.keys(props.form).length) {
+const props = defineProps({ form: {} as any });
+if (!!Object.keys(props?.form || {}).length) {
   formCategory.value = props.form.form_type;
   formTitle.value = props.form.form_title;
   formDescription.value = props.form.description;
