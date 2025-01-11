@@ -21,7 +21,7 @@ export const useFormStore = defineStore("form", {
       console.log(data);
 
       try {
-        const response: any = await api.post("form", {}, true);
+        const response: any = await api.post("form", data, true);
         this.forms = response;
         return response;
       } catch (err: any) {

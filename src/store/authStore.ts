@@ -69,7 +69,7 @@ export const useAuthStore = defineStore("auth", {
       this.error = null;
 
       try {
-        const response: any = await api.post("login", payload, false);
+        const response: any = await api.post("signup", payload, false);
         const { access, refresh } = response.data as IntTokens;
 
         this.setUserInfo({ access, refresh });

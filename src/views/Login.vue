@@ -84,7 +84,7 @@ const handleLogin = () => {
       })
       .then(() => {
         router.push("/");
-        toast.success("ثبت نام با موفقیت انجام شد");
+        toast.success("ورود با موفقیت انجام شد");
       })
       .catch((err) => {
         objectMap(err.data.error, (value: string, key: string) => {

@@ -31,8 +31,8 @@
               v-model="formCategory"
               class="w-full p-2 border rounded-md text-right"
             >
-              <option>عمومی</option>
-              <option>تخصصی</option>
+              <option value="public">عمومی</option>
+              <option value="private">تخصصی</option>
             </select>
           </div>
         </div>
@@ -86,6 +86,12 @@
 
             <div class="space-y-4">
               <div class="flex justify-between items-center">
+                <input
+                  type="text"
+                  v-model="element.title"
+                  class="p-2 border rounded-md flex-grow mx-4 text-right"
+                  placeholder="عنوان پرسش"
+                />
                 <select v-model="element.type" class="p-2 border rounded-md">
                   <option value="short">پاسخ کوتاه</option>
                   <option value="long">پاسخ بلند</option>
@@ -93,17 +99,11 @@
                   <option value="multiple">چند پاسخی</option>
                   <option value="file">بارگذاری پیوست</option>
                 </select>
-                <input
-                  type="text"
-                  v-model="element.title"
-                  class="p-2 border rounded-md flex-grow mx-4 text-right"
-                  placeholder="عنوان پرسش"
-                />
               </div>
 
               <div v-if="['single', 'multiple'].includes(element.type)">
                 <div
-                  v-for="(option, index) in element.options"
+                  v-for="(option, index) in element.properties"
                   :key="index"
                   class="flex items-center gap-2 mb-2"
                 >
@@ -133,9 +133,13 @@
               </div>
 
               <div v-if="element.type === 'file'" class="text-right">
-                <p class="text-sm text-gray-500">
-                  فرمت های مجاز: PDF, JPG, PNG
-                </p>
+                <div class="upload-container" id="drop-zone">
+                  <input type="file" id="file-input" multiple />
+                  <button class="upload-button" id="file-button">
+                    افزودن فایل
+                  </button>
+                  <p class="upload-hint">فرمت‌های مورد قبول: JPG, PNG, PDF</p>
+                </div>
               </div>
             </div>
           </div>
@@ -161,7 +165,7 @@ import { useFormStore } from "@/store/formStore";
 
 const formTitle = ref("");
 const formDescription = ref("");
-const formCategory = ref("عمومی");
+const formCategory = ref("public");
 
 interface Option {
   text: string;
@@ -172,7 +176,7 @@ interface Question {
   type: "short" | "long" | "single" | "multiple" | "file";
   title: string;
   required: boolean;
-  options: Option[];
+  properties: Option[];
 }
 
 const questions = ref<Question[]>([]);
@@ -184,7 +188,7 @@ const addQuestion = () => {
     type: "short",
     title: "",
     required: false,
-    options: [],
+    properties: [],
   });
 };
 
@@ -200,18 +204,60 @@ const deleteQuestion = (question: Question) => {
 };
 
 const addOption = (question: Question) => {
-  question.options.push({ text: "" });
+  question.properties.push({ text: "" });
 };
 
 const removeOption = (question: Question, index: number) => {
-  question.options.splice(index, 1);
+  question.properties.splice(index, 1);
 };
 const onSubmit = () => {
   useFormStore().submitForm({
-    formTitle: formTitle.value,
-    formDescription: formDescription.value,
-    formCategory: formCategory.value,
-    questions: questions.value,
+    form_type: formCategory.value,
+    form_title: formTitle.value,
+    description: formDescription.value,
+    sections: questions.value,
   });
 };
 </script>
+<style scoped>
+.upload-container {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+  font-family: "IRANSans", sans-serif;
+  position: relative;
+  background-color: #fafafa;
+}
+
+.upload-container.dragover {
+  border-color: #666;
+  background-color: #f0f0f0;
+}
+
+#file-input {
+  display: none;
+}
+
+.upload-button {
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.upload-button:hover {
+  background-color: #e0e0e0;
+}
+
+.upload-hint {
+  color: #888;
+  font-size: 14px;
+  margin-top: 10px;
+}
+</style>
