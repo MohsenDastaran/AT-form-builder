@@ -11,7 +11,6 @@ export const useFormStore = defineStore("form", {
     async getForms() {
       try {
         const response: any = await api.get("forms", {}, true);
-        console.log(response);
         this.forms = response;
         return response;
       } catch (err: any) {

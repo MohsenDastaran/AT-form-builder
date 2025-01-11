@@ -20,6 +20,20 @@ export const useAuthStore = defineStore("auth", {
   }),
 
   actions: {
+    decodeJWT(token: string) {
+      try {
+        const parts = token.split(".");
+        if (parts.length !== 3) {
+          return null;
+        }
+
+        const payload = atob(parts[1]);
+        return JSON.parse(payload);
+      } catch (e) {
+        console.error("Invalid JWT:", e);
+        return null;
+      }
+    },
     setUserInfo(info: { access: string; refresh: string }) {
       storage.set({ key: enuStorageKey.accessToken, value: info.access });
       storage.set({
