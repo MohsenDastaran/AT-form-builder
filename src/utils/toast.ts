@@ -9,6 +9,7 @@ const defaultOptions = (): ToastOptions => {
     pauseOnHover: true,
     rtl: window.document.dir === "rtl",
     pauseOnFocusLoss: true,
+    containerId: "toast-containter",
   };
 };
 export const toast = {

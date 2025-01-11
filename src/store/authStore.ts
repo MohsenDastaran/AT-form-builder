@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import { api } from "@/composables/useApi";
-import { enuStorageKey, storage } from "@/composables/useStorage";
+import { api } from "@/utils/useApi";
+import { enuStorageKey, storage } from "@/utils/useStorage";
 
 type AuthState = {
   isLoggedIn: boolean;
@@ -20,6 +20,20 @@ export const useAuthStore = defineStore("auth", {
   }),
 
   actions: {
+    decodeJWT(token: string) {
+      try {
+        const parts = token.split(".");
+        if (parts.length !== 3) {
+          return null;
+        }
+
+        const payload = atob(parts[1]);
+        return JSON.parse(payload);
+      } catch (e) {
+        console.error("Invalid JWT:", e);
+        return null;
+      }
+    },
     setUserInfo(info: { access: string; refresh: string }) {
       storage.set({ key: enuStorageKey.accessToken, value: info.access });
       storage.set({
@@ -55,7 +69,7 @@ export const useAuthStore = defineStore("auth", {
       this.error = null;
 
       try {
-        const response: any = await api.post("login", payload, false);
+        const response: any = await api.post("signup", payload, false);
         const { access, refresh } = response.data as IntTokens;
 
         this.setUserInfo({ access, refresh });
