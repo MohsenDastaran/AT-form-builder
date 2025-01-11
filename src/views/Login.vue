@@ -2,7 +2,7 @@
   <div class="min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
       <h2 class="text-2xl font-bold mb-6">خوش آمدید</h2>
-      <h4 class="mb-6">برای ورود رمزو ایمیل خود را وارد کنید</h4>
+      <h4 class="mb-6 text-gray-400">برای ورود رمزو ایمیل خود را وارد کنید</h4>
       <form @submit.prevent="handleLogin" class="space-y-4">
         <BaseInput
           v-model="email"
@@ -52,6 +52,9 @@ import BaseInput from "../components/BaseInput.vue";
 import PasswordInput from "../components/PasswordInput.vue";
 import { usePasswordValidation } from "../composables/usePasswordValidation";
 import { useEmailValidation } from "../composables/useEmailValidation";
+import { useAuthStore } from "@/store/authStore";
+import { toast } from "@/composables/toast";
+import { objectMap } from "@/composables/objectMap";
 
 const router = useRouter();
 const formError = ref("");
@@ -73,10 +76,21 @@ const handleLogin = () => {
   if (!isFormValid.value) {
     formError.value = "لطفا تمام فیلدها را به درستی پر کنید";
     return;
+  } else {
+    useAuthStore()
+      .loginUser({
+        email: email.value,
+        password: password.value,
+      })
+      .then(() => {
+        router.push("/");
+        toast.success("ثبت نام با موفقیت انجام شد");
+      })
+      .catch((err) => {
+        objectMap(err.data.error, (value: string, key: string) => {
+          toast.error(`${key} Error: ${value}`);
+        });
+      });
   }
-
-  formError.value = "";
-  localStorage.setItem("isAuthenticated", "true");
-  router.push("/");
 };
 </script>
