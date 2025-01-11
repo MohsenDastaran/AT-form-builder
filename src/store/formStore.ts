@@ -12,7 +12,7 @@ export const useFormStore = defineStore("form", {
       try {
         const response: any = await api.get("forms", {}, true);
         this.forms = response;
-        return response;
+        return response.data;
       } catch (err: any) {
         throw err;
       }

@@ -67,19 +67,19 @@
                   @change="element.required = $event"
                 />
                 <button class="drag-handle p-1 hover:bg-gray-100 rounded">
-                  ↕️
+                  <ArrowDownUp />
                 </button>
                 <button
                   class="p-1 hover:bg-gray-100 rounded"
                   @click="duplicateQuestion(element)"
                 >
-                  📋
+                  <Copy />
                 </button>
                 <button
                   class="p-1 hover:bg-gray-100 rounded"
                   @click="deleteQuestion(element)"
                 >
-                  🗑️
+                  <Trash />
                 </button>
               </div>
             </div>
@@ -162,6 +162,8 @@ import draggable from "vuedraggable";
 import BaseInput from "@/components/BaseInput.vue";
 import Switch from "@/components/Switch.vue";
 import { useFormStore } from "@/store/formStore";
+import router from "@/router";
+import { Copy, Trash, ArrowDownUp } from "lucide-vue-next";
 
 const formTitle = ref("");
 const formDescription = ref("");
@@ -211,12 +213,14 @@ const removeOption = (question: Question, index: number) => {
   question.properties.splice(index, 1);
 };
 const onSubmit = () => {
-  useFormStore().submitForm({
-    form_type: formCategory.value,
-    form_title: formTitle.value,
-    description: formDescription.value,
-    sections: questions.value,
-  });
+  useFormStore()
+    .submitForm({
+      form_type: formCategory.value,
+      form_title: formTitle.value,
+      description: formDescription.value,
+      sections: questions.value,
+    })
+    .then(() => router.push("/"));
 };
 </script>
 <style scoped>
