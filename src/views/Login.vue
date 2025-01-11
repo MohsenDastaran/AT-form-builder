@@ -53,8 +53,8 @@ import PasswordInput from "../components/PasswordInput.vue";
 import { usePasswordValidation } from "../composables/usePasswordValidation";
 import { useEmailValidation } from "../composables/useEmailValidation";
 import { useAuthStore } from "@/store/authStore";
-import { toast } from "@/composables/toast";
-import { objectMap } from "@/composables/objectMap";
+import { toast } from "@/utils/toast";
+import { objectMap } from "@/utils/objectMap";
 
 const router = useRouter();
 const formError = ref("");

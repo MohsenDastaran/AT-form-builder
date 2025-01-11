@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import { api } from "@/composables/useApi";
-import { enuStorageKey, storage } from "@/composables/useStorage";
+import { api } from "@/utils/useApi";
+import { enuStorageKey, storage } from "@/utils/useStorage";
 
 type AuthState = {
   isLoggedIn: boolean;

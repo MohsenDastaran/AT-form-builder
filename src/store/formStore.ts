@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { api } from "@/composables/useApi";
+import { api } from "@/utils/useApi";
 
 interface IntForms {}
 export const useFormStore = defineStore("form", {

@@ -4,7 +4,7 @@ import Register from "../views/Register.vue";
 import Forms from "../views/Forms.vue";
 import CreateForm from "../views/CreateForm.vue";
 import { useAuthStore } from "@/store/authStore";
-import { enuStorageKey, storage } from "@/composables/useStorage";
+import { enuStorageKey, storage } from "@/utils/useStorage";
 const router = createRouter({
   history: createWebHistory(),
   routes: [
