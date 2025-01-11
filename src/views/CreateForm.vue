@@ -5,7 +5,10 @@
 
       <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
         <div class="flex justify-end items-center mb-6">
-          <button class="bg-gray-800 text-white px-4 py-2 rounded-md mb-6">
+          <button
+            @click="onSubmit"
+            class="bg-gray-800 text-white px-4 py-2 rounded-md mb-6"
+          >
             ذخیره فرم
           </button>
         </div>
@@ -54,8 +57,15 @@
       >
         <template #item="{ element }">
           <div class="bg-white rounded-lg shadow-sm p-6">
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex justify-end items-center mb-4">
+              <!-- <div class="flex items-center gap-2">
+              </div> -->
               <div class="flex gap-2">
+                <Switch
+                  label="پاسخ الزامی"
+                  :value="element.required"
+                  @change="element.required = $event"
+                />
                 <button class="drag-handle p-1 hover:bg-gray-100 rounded">
                   ↕️
                 </button>
@@ -71,10 +81,6 @@
                 >
                   🗑️
                 </button>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-sm">پاسخ الزامی</span>
-                <input type="checkbox" v-model="element.required" />
               </div>
             </div>
 
@@ -149,7 +155,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import draggable from "vuedraggable";
-import BaseInput from "../components/BaseInput.vue";
+import BaseInput from "@/components/BaseInput.vue";
+import Switch from "@/components/Switch.vue";
+import { useFormStore } from "@/store/formStore";
 
 const formTitle = ref("");
 const formDescription = ref("");
@@ -197,5 +205,13 @@ const addOption = (question: Question) => {
 
 const removeOption = (question: Question, index: number) => {
   question.options.splice(index, 1);
+};
+const onSubmit = () => {
+  useFormStore().submitForm({
+    formTitle: formTitle.value,
+    formDescription: formDescription.value,
+    formCategory: formCategory.value,
+    questions: questions.value,
+  });
 };
 </script>

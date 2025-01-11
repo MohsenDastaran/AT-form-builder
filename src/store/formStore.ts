@@ -17,5 +17,16 @@ export const useFormStore = defineStore("form", {
         throw err;
       }
     },
+    async submitForm(data: any) {
+      console.log(data);
+
+      try {
+        const response: any = await api.post("form", {}, true);
+        this.forms = response;
+        return response;
+      } catch (err: any) {
+        throw err;
+      }
+    },
   },
 });
