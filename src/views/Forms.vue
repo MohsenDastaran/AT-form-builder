@@ -26,13 +26,15 @@
           <p class="text-gray-500 text-sm text-right">
             {{ convertToPersianDate(form.created_at) }}
           </p>
-          <button
+
+          <router-link
+            :to="`/edit-form?id=${form.form_id}`"
             class="mt-4 p-2 w-full flex justify-center gap-3 border rounded-xl"
           >
             <EyeIcon class="h-5 w-5 text-gray-400" />
 
             <p>مشاهده فرم</p>
-          </button>
+          </router-link>
         </div>
       </div>
       <div

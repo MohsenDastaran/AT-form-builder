@@ -164,7 +164,6 @@ import Switch from "@/components/Switch.vue";
 import { useFormStore } from "@/store/formStore";
 import router from "@/router";
 import { Copy, Trash, ArrowDownUp } from "lucide-vue-next";
-
 const formTitle = ref("");
 const formDescription = ref("");
 const formCategory = ref("public");
@@ -213,15 +212,29 @@ const removeOption = (question: Question, index: number) => {
   question.properties.splice(index, 1);
 };
 const onSubmit = () => {
-  useFormStore()
-    .submitForm({
-      form_type: formCategory.value,
-      form_title: formTitle.value,
-      description: formDescription.value,
-      sections: questions.value,
-    })
-    .then(() => router.push("/"));
+  const payload = {
+    form_type: formCategory.value,
+    form_title: formTitle.value,
+    description: formDescription.value,
+    sections: questions.value,
+  };
+  if (!!Object.keys(props.form).length) {
+    useFormStore()
+      .editForm(props.form.id, payload)
+      .then(() => router.push("/"));
+  } else
+    useFormStore()
+      .submitForm(payload)
+      .then(() => router.push("/"));
 };
+
+const props = defineProps({ form: Object as any });
+if (!!Object.keys(props.form).length) {
+  formCategory.value = props.form.form_type;
+  formTitle.value = props.form.form_title;
+  formDescription.value = props.form.description;
+  questions.value = props.form.sections;
+}
 </script>
 <style scoped>
 .upload-container {

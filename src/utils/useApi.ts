@@ -68,6 +68,7 @@ const useApi = (data: ApiRequestData) =>
         method: data.method,
         body: data.body,
         headers,
+        query: data.queryParams,
       })
         .then((res: unknown) => {
           resolve(res);
@@ -119,18 +120,44 @@ export const api = {
       queryParams,
       requiresAuth,
     }),
-  post: (url: string, body: Record<string, unknown>, requiresAuth = true) =>
-    useApi({ url, method: APIMETHODSTYPES.POST, body, requiresAuth }),
+
+  post: (
+    url: string,
+    body: Record<string, unknown>,
+    requiresAuth = true,
+    queryParams?: Record<string, unknown>
+  ) =>
+    useApi({
+      url,
+      method: APIMETHODSTYPES.POST,
+      body,
+      queryParams,
+      requiresAuth,
+    }),
   put: (
     url: string,
     body: Record<string, unknown>,
-
-    requiresAuth = true
-  ) => useApi({ url, method: APIMETHODSTYPES.PUT, body, requiresAuth }),
+    requiresAuth = true,
+    queryParams?: Record<string, unknown>
+  ) =>
+    useApi({
+      url,
+      method: APIMETHODSTYPES.PUT,
+      body,
+      queryParams,
+      requiresAuth,
+    }),
   patch: (
     url: string,
     body: Record<string, unknown>,
-
-    requiresAuth = true
-  ) => useApi({ url, method: APIMETHODSTYPES.PATCH, body, requiresAuth }),
+    requiresAuth = true,
+    queryParams?: Record<string, unknown>
+  ) =>
+    useApi({
+      url,
+      method: APIMETHODSTYPES.PATCH,
+      body,
+      queryParams,
+      requiresAuth,
+    }),
 };
